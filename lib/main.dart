@@ -51,7 +51,11 @@ class _MyAppState extends State<MyApp> {
           ],
           onTap: (index) {
             setState(() {
-              _pageController.jumpToPage(index);
+              _pageController.animateToPage(
+                index,
+                duration: Duration(milliseconds: 100),
+                curve: Curves.easeInOut,
+              );
             });
           },
         ),
