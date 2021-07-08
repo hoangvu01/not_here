@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:not_here/home/police_api/model/location.dart';
+import 'package:not_here/web/police_api/model/location.dart';
 
 part 'crime.g.dart';
 

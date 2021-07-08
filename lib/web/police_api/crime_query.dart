@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:http/http.dart' as http;
-import 'package:not_here/home/police_api/model/crime.dart';
+import 'package:not_here/web/police_api/model/crime.dart';
 
 Future<List<Crime>> fetchCrimeAtLocation(double lat, double lng) async {
   final queryParams = {

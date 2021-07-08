@@ -1,9 +1,13 @@
+import 'dart:developer' as developer;
+
 import 'package:intl/intl.dart';
+import 'package:not_here/web/google_api/geocoding/geocoding_query.dart';
+import 'package:not_here/web/google_api/geocoding/model/geocode_parts.dart';
+import 'package:not_here/web/police_api/crime_query.dart';
+import 'package:not_here/web/police_api/model/crime.dart';
 import 'package:recase/recase.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:not_here/home/police_api/crime_data.dart';
-import 'package:not_here/home/police_api/model/crime.dart';
 
 class CrimeCategoryView extends StatefulWidget {
   const CrimeCategoryView({
@@ -100,17 +104,26 @@ class _CrimeCategoryViewState extends State<CrimeCategoryView> {
 }
 
 class CrimeListView extends StatefulWidget {
+  const CrimeListView({
+    Key? key,
+    required this.address,
+  }) : super(key: key);
+
+  final String address;
+
   @override
   _CrimeListViewState createState() => _CrimeListViewState();
 }
 
 class _CrimeListViewState extends State<CrimeListView> {
-  late Future<List<Crime>> data;
-
-  @override
-  void initState() {
-    super.initState();
-    data = fetchCrimeAtLocation(51.5074, 0.1278);
+  Future<List<Crime>> _getCrimeFutures() async {
+    if (widget.address.isNotEmpty) {
+      List<GeoCodingAddress> addressFuture =
+          await fetchCoordinates(widget.address);
+      GeoCodingLocation location = addressFuture.first.geometry.location;
+      return fetchCrimeAtLocation(location.lat, location.lng);
+    }
+    return Future.value([]);
   }
 
   Widget _buildCrimeList(List<Crime> crimes) {
@@ -136,9 +149,8 @@ class _CrimeListViewState extends State<CrimeListView> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 30.0),
-      padding: EdgeInsets.symmetric(vertical: 10),
       child: FutureBuilder(
-        future: data,
+        future: _getCrimeFutures(),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
             return _buildCrimeList(snapshot.data as List<Crime>);
@@ -147,7 +159,7 @@ class _CrimeListViewState extends State<CrimeListView> {
           }
 
           // By default, show a loading spinner.
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         },
       ),
     );

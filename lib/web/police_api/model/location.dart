@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:not_here/home/police_api/model/street.dart';
+import 'package:not_here/web/police_api/model/street.dart';
 
 part 'location.g.dart';
 
