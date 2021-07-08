@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SearchBox extends StatefulWidget {
+  const SearchBox({
+    Key? key,
+    required this.textController,
+  }) : super(key: key);
+
+  final TextEditingController textController;
+
   @override
   _SearchBoxState createState() => _SearchBoxState();
 }
@@ -26,10 +33,12 @@ class _SearchBoxState extends State<SearchBox> {
       child: Container(
         padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
         child: TextField(
+          controller: widget.textController,
           decoration: InputDecoration(
-              icon: Icon(Icons.search),
-              border: UnderlineInputBorder(),
-              hintText: 'Town, city or postcode'),
+            icon: Icon(Icons.search),
+            border: UnderlineInputBorder(),
+            hintText: 'Town, city or postcode',
+          ),
         ),
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:intl/intl.dart';
 import 'package:not_here/web/google_api/geocoding/geocoding_query.dart';
 import 'package:not_here/web/google_api/geocoding/model/geocode_parts.dart';
@@ -27,7 +25,7 @@ class _CrimeCategoryViewState extends State<CrimeCategoryView> {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-      height: 80,
+      height: 90,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: Colors.white,
@@ -123,7 +121,7 @@ class _CrimeListViewState extends State<CrimeListView> {
       GeoCodingLocation location = addressFuture.first.geometry.location;
       return fetchCrimeAtLocation(location.lat, location.lng);
     }
-    return Future.value([]);
+    return [];
   }
 
   Widget _buildCrimeList(List<Crime> crimes) {

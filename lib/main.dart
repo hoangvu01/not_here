@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:not_here/about/about_page.dart';
 import 'package:not_here/home/search_page.dart';
 
-void main() => runApp(MyApp());
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+Future main() async {
+  await dotenv.load(fileName: ".env");
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -33,9 +39,9 @@ class _MyAppState extends State<MyApp> {
               navbarState?.setPage(index);
             },
             children: <Widget>[
-              Dashboard(),
+              SearchPage(),
               AboutPage(),
-              Dashboard(),
+              Placeholder(),
             ],
           ),
         ),
