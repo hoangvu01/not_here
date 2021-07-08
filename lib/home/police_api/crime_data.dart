@@ -2,15 +2,12 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:not_here/home/police_api/model/crime.dart';
 
-Future<List<Crime>> fetchCrimeAtLocation(
-    DateTime datetime, double lat, double lng) async {
+Future<List<Crime>> fetchCrimeAtLocation(double lat, double lng) async {
   final queryParams = {
     'lat': lat.toString(),
     'lng': lng.toString(),
-    'month': DateFormat('yyyy-MM').format(datetime),
   };
   Uri url = Uri.https(
       'data.police.uk', '/api/crimes-street/crimes-at-location', queryParams);
