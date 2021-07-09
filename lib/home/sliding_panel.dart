@@ -18,14 +18,14 @@ class _CrimePanelState extends State<CrimePanel> {
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
       decoration: BoxDecoration(
-        color: Colors.lightBlue.shade50,
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey,
+            color: Theme.of(context).shadowColor,
             blurRadius: 20,
           ),
         ],
@@ -33,7 +33,7 @@ class _CrimePanelState extends State<CrimePanel> {
       child: Column(children: [
         Divider(
           height: 20,
-          color: Colors.grey,
+          color: Theme.of(context).dividerColor,
           thickness: 2,
           indent: 150,
           endIndent: 150,

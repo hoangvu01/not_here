@@ -4,7 +4,9 @@ import 'package:not_here/home/sliding_panel.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  const SearchPage({Key? key, required this.pageController}) : super(key: key);
+
+  final PageController pageController;
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -31,7 +33,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return SlidingUpPanel(
       renderPanelSheet: false,
-      backdropColor: Colors.blue.shade100,
+      backdropColor: Theme.of(context).scaffoldBackgroundColor,
       controller: _panelController,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,12 +63,12 @@ class _SearchPageState extends State<SearchPage> {
                 boxShadow: [
                   BoxShadow(
                     offset: Offset(0.0, 15.0),
-                    color: Colors.blueGrey.shade100,
+                    color: Theme.of(context).shadowColor,
                     blurRadius: 10.0,
                     spreadRadius: 3.0,
                   ),
                 ],
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onBackground,
               ),
               child: Container(
                 padding: EdgeInsets.fromLTRB(0, 0, 20, 0),

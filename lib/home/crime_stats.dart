@@ -28,11 +28,11 @@ class _CrimeCategoryViewState extends State<CrimeCategoryView> {
       height: 90,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onBackground,
         boxShadow: [
           BoxShadow(
             offset: Offset(0.0, 5.0),
-            color: Colors.blueGrey.shade100,
+            color: Theme.of(context).shadowColor,
             blurRadius: 5.0,
             spreadRadius: 1.0,
           ),
@@ -133,7 +133,7 @@ class _CrimeListViewState extends State<CrimeListView> {
     sortedCrimeByOccurences.forEach((elem) => elem.sortBy((e) => e.month));
 
     return ListView.builder(
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
       itemCount: sortedCrimeByOccurences.length,
       itemBuilder: (BuildContext ctx, int index) {
         List<Crime> categorisedCrimes = sortedCrimeByOccurences[index];
@@ -146,7 +146,6 @@ class _CrimeListViewState extends State<CrimeListView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 30.0),
       child: FutureBuilder(
         future: _getCrimeFutures(),
         builder: (ctx, snapshot) {
