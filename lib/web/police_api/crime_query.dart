@@ -18,7 +18,9 @@ Future<List<Crime>> fetchCrimeAtLocation(double lat, double lng) async {
     return List<Crime>.from(list.map((e) => Crime.fromJson(e))).toList();
   } else {
     developer.log(
-        "Fetch failure, status code: ${response.statusCode}, body: ${response.body}",
+        "Fetch failure for URL ${url.toString()}, "
+        "status code: ${response.statusCode}, "
+        "body: ${response.body}",
         level: 4);
     throw Exception('Failure to fetch data');
   }
