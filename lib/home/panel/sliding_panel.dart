@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:not_here/home/crime_stats.dart';
+import 'package:not_here/home/panel/crime_list.dart';
 import 'package:not_here/web/google_api/geocoding/geocoding_query.dart';
 import 'package:not_here/web/google_api/geocoding/model/geocode_parts.dart';
 import 'package:not_here/web/police_api/crime_query.dart';
@@ -97,7 +97,7 @@ class _CrimePanelState extends State<CrimePanel> {
             future: _crimes,
             builder: (ctx, snapshot) {
               if (snapshot.hasData) {
-                return CrimeListView(
+                return CrimeList(
                     crimes: snapshot.data as Map<String, List<Crime>>);
               }
 
