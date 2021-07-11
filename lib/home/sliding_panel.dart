@@ -1,18 +1,54 @@
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:not_here/home/crime_stats.dart';
+import 'package:not_here/web/google_api/geocoding/geocoding_query.dart';
+import 'package:not_here/web/google_api/geocoding/model/geocode_parts.dart';
+import 'package:not_here/web/police_api/crime_query.dart';
+import 'package:not_here/web/police_api/model/crime.dart';
 
-class CrimePanel extends StatefulWidget {
+class CrimePanelData {
   final String address;
 
-  const CrimePanel({Key? key, required this.address}) : super(key: key);
+  CrimePanelData(this.address);
+}
+
+class CrimePanel extends StatefulWidget {
+  final CrimePanelData data;
+
+  const CrimePanel({Key? key, required this.data}) : super(key: key);
 
   @override
   _CrimePanelState createState() => _CrimePanelState();
 }
 
 class _CrimePanelState extends State<CrimePanel> {
+  /// The snapshot contains a list of list of crimes grouped by
+  /// crime categories as the key
+  late final Future<Map<String, List<Crime>>> _crimes;
+
+  @override
+  void initState() {
+    super.initState();
+    _crimes = _initCrimeFutures();
+  }
+
+  Future<Map<String, List<Crime>>> _initCrimeFutures() async {
+    if (widget.data.address.isEmpty) {
+      return Map();
+    }
+    List<GeoCodingAddress> addressFuture =
+        await fetchCoordinates(widget.data.address);
+    GeoCodingLocation location = addressFuture.first.geometry.location;
+    List<Crime> rawCrimes =
+        await fetchCrimeAtLocation(location.lat, location.lng);
+    Map<String, List<Crime>> groupedCrimes =
+        groupBy(rawCrimes, (Crime crime) => crime.category);
+
+    return groupedCrimes;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,7 +79,7 @@ class _CrimePanelState extends State<CrimePanel> {
           child: Container(
             margin: const EdgeInsets.all(20),
             child: Text(
-              widget.address,
+              widget.data.address,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -57,7 +93,17 @@ class _CrimePanelState extends State<CrimePanel> {
         ),
         Flexible(
           flex: 3,
-          child: CrimeListView(address: widget.address),
+          child: FutureBuilder(
+            future: _crimes,
+            builder: (ctx, snapshot) {
+              if (snapshot.hasData) {
+                return CrimeListView(
+                    crimes: snapshot.data as Map<String, List<Crime>>);
+              }
+
+              return Center(child: CircularProgressIndicator());
+            },
+          ),
         ),
       ]),
     );

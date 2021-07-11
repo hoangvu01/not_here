@@ -7,11 +7,12 @@ class AppTheme {
         accentIconTheme: IconThemeData(
           color: const Color(0xFF457B9D),
         ),
-        backgroundColor: Color(0xFFA8DADC),
-        scaffoldBackgroundColor: Color(0xFFA8DADC),
+        backgroundColor: Colors.lightBlue.shade50,
+        scaffoldBackgroundColor: Colors.lightBlue.shade50,
         fontFamily: 'Montserrat',
         colorScheme: ColorScheme.light(
           primary: const Color(0xFF457B9D),
+          primaryVariant: const Color(0xFFA8DADC),
           onPrimary: const Color(0xFFF1FAEE),
           secondary: const Color(0xFF1D3557),
           onBackground: Colors.white,
@@ -20,7 +21,7 @@ class AppTheme {
         iconTheme: IconThemeData(
           color: Colors.grey.shade600,
         ),
-        shadowColor: Colors.blueGrey.shade300,
+        shadowColor: Colors.blueGrey.shade100,
         dividerColor: Colors.grey,
       );
 

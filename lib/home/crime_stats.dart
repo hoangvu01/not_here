@@ -20,6 +20,66 @@ class CrimeCategoryView extends StatefulWidget {
 }
 
 class _CrimeCategoryViewState extends State<CrimeCategoryView> {
+  Widget _buildIcon(List<List<Crime>> crimes) {
+    switch (crimes[0].length.compareTo(crimes[1].length)) {
+      case 1:
+        return Icon(Icons.arrow_upward);
+
+      case -1:
+        return Icon(Icons.arrow_downward);
+
+      default:
+        return Icon(Icons.horizontal_rule);
+    }
+  }
+
+  Widget _buildSuffixWidget() {
+    Map<DateTime, List<Crime>> crimesGroupByMonth =
+        widget.crimes.groupListsBy((Crime e) => e.month);
+
+    List<List<Crime>> sortedCrimesByMonth = crimesGroupByMonth.values
+        .sorted((a, b) => b.first.month.compareTo(a.first.month));
+
+    if (sortedCrimesByMonth.length > 1) {
+      int comp = sortedCrimesByMonth[0]
+          .length
+          .compareTo(sortedCrimesByMonth[1].length);
+
+      switch (comp) {
+        case 1:
+          return Row(
+            children: [
+              Icon(Icons.arrow_upward, color: Colors.redAccent),
+              Text(
+                "${sortedCrimesByMonth.first.length}",
+                style: TextStyle(color: Colors.redAccent),
+              ),
+            ],
+          );
+
+        case -1:
+          return Row(
+            children: [
+              Icon(Icons.arrow_downward, color: Colors.greenAccent),
+              Text(
+                "${sortedCrimesByMonth.first.length}",
+                style: TextStyle(color: Colors.greenAccent),
+              ),
+            ],
+          );
+      }
+    }
+
+    return Row(
+      children: [
+        Icon(
+          Icons.horizontal_rule,
+        ),
+        Text("${sortedCrimesByMonth.first.length}"),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,22 +137,9 @@ class _CrimeCategoryViewState extends State<CrimeCategoryView> {
             ),
           ),
           Flexible(
-            flex: 2,
-            child: Container(
-              width: 50,
-              height: 50,
-              margin: const EdgeInsets.symmetric(horizontal: 6),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade100.withOpacity(0.5),
-              ),
-            ),
-          ),
-          Flexible(
             flex: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.blue.shade100.withOpacity(0.5),
-              ),
+            child: Center(
+              child: _buildSuffixWidget(),
             ),
           ),
         ],
@@ -104,61 +151,36 @@ class _CrimeCategoryViewState extends State<CrimeCategoryView> {
 class CrimeListView extends StatefulWidget {
   const CrimeListView({
     Key? key,
-    required this.address,
+    required this.crimes,
   }) : super(key: key);
 
-  final String address;
+  /// A List where each key is crime category and the value is a list of crimes
+  /// in that category, sorted in descending order of time.
+  final Map<String, List<Crime>> crimes;
 
   @override
   _CrimeListViewState createState() => _CrimeListViewState();
 }
 
 class _CrimeListViewState extends State<CrimeListView> {
-  Future<List<Crime>> _getCrimeFutures() async {
-    if (widget.address.isNotEmpty) {
-      List<GeoCodingAddress> addressFuture =
-          await fetchCoordinates(widget.address);
-      GeoCodingLocation location = addressFuture.first.geometry.location;
-      return fetchCrimeAtLocation(location.lat, location.lng);
-    }
-    return [];
-  }
-
-  Widget _buildCrimeList(List<Crime> crimes) {
-    Map<String, List<Crime>> groupByCategory =
-        groupBy(crimes, (Crime crime) => crime.category);
-
-    List<List<Crime>> sortedCrimeByOccurences = groupByCategory.values.toList();
-    sortedCrimeByOccurences.sort((xs, ys) => ys.length.compareTo(xs.length));
-    sortedCrimeByOccurences.forEach((elem) => elem.sortBy((e) => e.month));
+  Widget _buildCrimeList() {
+    List<List<Crime>> crimesList = widget.crimes.values.toList();
+    crimesList
+      ..sort((xs, ys) => ys.length.compareTo(xs.length))
+      ..forEach((elem) => elem.sortBy((e) => e.month));
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
-      itemCount: sortedCrimeByOccurences.length,
-      itemBuilder: (BuildContext ctx, int index) {
-        List<Crime> categorisedCrimes = sortedCrimeByOccurences[index];
-
-        return CrimeCategoryView(crimes: categorisedCrimes);
-      },
+      itemCount: crimesList.length,
+      itemBuilder: (BuildContext ctx, int index) =>
+          CrimeCategoryView(crimes: crimesList[index]),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: FutureBuilder(
-        future: _getCrimeFutures(),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasData) {
-            return _buildCrimeList(snapshot.data as List<Crime>);
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
-
-          // By default, show a loading spinner.
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
+      child: _buildCrimeList(),
     );
   }
 }

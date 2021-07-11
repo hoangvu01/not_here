@@ -110,7 +110,7 @@ class _SearchPageState extends State<SearchPage> {
       panel: Visibility(
         visible: _panelVisible,
         child: CrimePanel(
-          address: _enteredSearchText,
+          data: CrimePanelData(_enteredSearchText),
         ),
       ),
       maxHeight: MediaQuery.of(context).size.height -
