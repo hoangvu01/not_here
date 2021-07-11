@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:not_here/home/sliding_panel.dart';
+import 'package:not_here/home/panel/sliding_panel.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class SearchPage extends StatefulWidget {

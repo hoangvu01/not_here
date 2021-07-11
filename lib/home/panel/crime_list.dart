@@ -1,3 +1,4 @@
+import 'package:not_here/home/panel/crime_list_card.dart';
 import 'package:not_here/web/police_api/model/crime.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

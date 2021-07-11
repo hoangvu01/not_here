@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:not_here/web/police_api/model/crime.dart';
@@ -18,7 +19,7 @@ class CrimeListCard extends StatefulWidget {
 class _CrimeListCardState extends State<CrimeListCard> {
   Widget _buildSuffixWidget() {
     Map<DateTime, List<Crime>> crimesGroupByMonth =
-        widget.crimes.groupListsBy((Crime e) => e.month);
+        groupBy(widget.crimes, (Crime e) => e.month);
 
     List<List<Crime>> sortedCrimesByMonth = crimesGroupByMonth.values
         .sorted((a, b) => b.first.month.compareTo(a.first.month));
