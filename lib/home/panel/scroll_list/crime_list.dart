@@ -1,4 +1,4 @@
-import 'package:not_here/home/panel/crime_list_card.dart';
+import 'package:not_here/home/panel/scroll_list/crime_list_card.dart';
 import 'package:not_here/web/police_api/model/crime.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class _CrimeListState extends State<CrimeList> {
       ..forEach((elem) => elem.sortBy((e) => e.month));
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       itemCount: crimesList.length,
       itemBuilder: (BuildContext ctx, int index) =>
           CrimeListCard(crimes: crimesList[index]),
@@ -35,6 +35,7 @@ class _CrimeListState extends State<CrimeList> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.fromLTRB(15, 2, 15, 15),
       child: _buildCrimeList(),
     );
   }

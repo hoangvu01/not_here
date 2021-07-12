@@ -2,9 +2,8 @@ import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:not_here/home/panel/crime_list.dart';
 import 'package:not_here/home/panel/neighbourhood_details.dart';
-import 'package:not_here/home/panel/summary_chart.dart';
+import 'package:not_here/home/panel/scroll_list/scroll_summary.dart';
 import 'package:not_here/web/google_api/geocoding/geocoding_query.dart';
 import 'package:not_here/web/google_api/geocoding/model/geocode_parts.dart';
 import 'package:not_here/web/police_api/crime_query.dart';
@@ -21,7 +20,7 @@ class CrimePanelData {
 class CrimePanel extends StatefulWidget {
   final CrimePanelData data;
 
-  const CrimePanel({Key? key, required this.data}) : super(key: key);
+  const CrimePanel({required Key key, required this.data}) : super(key: key);
 
   @override
   _CrimePanelState createState() => _CrimePanelState();
@@ -47,6 +46,7 @@ class _CrimePanelState extends State<CrimePanel> {
   }
 
   void _initInternalData() async {
+    print("Initialising...");
     _geoAddresses = _initGeoAddresses();
     _force = _initForce();
     _crimes = _initCrimeFutures();
@@ -109,60 +109,31 @@ class _CrimePanelState extends State<CrimePanel> {
         ),
         Flexible(
           flex: 1,
-          child: Container(
-            margin: const EdgeInsets.all(20),
-            child: Text(
-              widget.data.address,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
+          child: FutureBuilder(
+            future: _force,
+            builder: (ctx, snapshot) {
+              if (snapshot.hasData) {
+                return NeighbourhoodContacts(
+                    snapshot.data as NeighbourhoodForceData);
+              }
+
+              return Center(child: CircularProgressIndicator());
+            },
           ),
         ),
-        Flexible(
-          flex: 2,
-          child: Row(
-            children: [
-              Container(
-                width: 150,
-                child: FutureBuilder(
-                  future: _crimes,
-                  builder: (ctx, snapshot) {
-                    if (snapshot.hasData) {
-                      return CrimeSummaryChart(
-                        crimes: snapshot.data as Map<String, List<Crime>>,
-                      );
-                    }
-
-                    return Center(child: CircularProgressIndicator());
-                  },
-                ),
-              ),
-              Expanded(
-                child: FutureBuilder(
-                  future: _force,
-                  builder: (ctx, snapshot) {
-                    if (snapshot.hasData) {
-                      return NeighbourhoodContacts(
-                          snapshot.data as NeighbourhoodForceData);
-                    }
-
-                    return Center(child: CircularProgressIndicator());
-                  },
-                ),
-              )
-            ],
-          ),
-        ),
-        Flexible(
-          flex: 3,
+        Expanded(
+          flex: 5,
           child: FutureBuilder(
             future: _crimes,
             builder: (ctx, snapshot) {
               if (snapshot.hasData) {
-                return CrimeList(
-                  crimes: snapshot.data as Map<String, List<Crime>>,
+                return Container(
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  child: ScrollListWrapper(
+                    crimes: snapshot.data as Map<String, List<Crime>>,
+                  ),
                 );
               }
 

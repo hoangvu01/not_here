@@ -16,8 +16,8 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController searchBarController = TextEditingController();
   final PanelController _panelController = PanelController();
 
-  String _enteredSearchText = "";
   bool _panelVisible = false;
+  String _enteredSearchText = "";
 
   @override
   void initState() {
@@ -88,8 +88,8 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   onEditingComplete: () {
                     setState(() {
-                      _enteredSearchText = searchBarController.text;
                       FocusScope.of(context).unfocus();
+                      _enteredSearchText = searchBarController.text;
                       _panelVisible = true;
                       _panelController.open();
                     });
@@ -111,6 +111,7 @@ class _SearchPageState extends State<SearchPage> {
       panel: Visibility(
         visible: _panelVisible,
         child: CrimePanel(
+          key: Key(_enteredSearchText),
           data: CrimePanelData(_enteredSearchText),
         ),
       ),
