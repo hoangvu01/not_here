@@ -91,6 +91,7 @@ class _SearchPageState extends State<SearchPage> {
                       _enteredSearchText = searchBarController.text;
                       FocusScope.of(context).unfocus();
                       _panelVisible = true;
+                      _panelController.open();
                     });
                   },
                 ),

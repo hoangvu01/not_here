@@ -3,10 +3,14 @@ import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:not_here/home/panel/crime_list.dart';
+import 'package:not_here/home/panel/neighbourhood_details.dart';
+import 'package:not_here/home/panel/summary_chart.dart';
 import 'package:not_here/web/google_api/geocoding/geocoding_query.dart';
 import 'package:not_here/web/google_api/geocoding/model/geocode_parts.dart';
 import 'package:not_here/web/police_api/crime_query.dart';
+import 'package:not_here/web/police_api/force_query.dart';
 import 'package:not_here/web/police_api/model/crime.dart';
+import 'package:not_here/web/police_api/model/neighbourhood.dart';
 
 class CrimePanelData {
   final String address;
@@ -24,6 +28,14 @@ class CrimePanel extends StatefulWidget {
 }
 
 class _CrimePanelState extends State<CrimePanel> {
+  /// The future contains address and coordinates of the locations that match
+  /// the text in the search bar
+  late final Future<List<GeoCodingAddress>> _geoAddresses;
+
+  /// The future contains details about the neighbourhood from the address
+  /// in the search box
+  late final Future<NeighbourhoodForceData> _force;
+
   /// The snapshot contains a list of list of crimes grouped by
   /// crime categories as the key
   late final Future<Map<String, List<Crime>>> _crimes;
@@ -31,16 +43,37 @@ class _CrimePanelState extends State<CrimePanel> {
   @override
   void initState() {
     super.initState();
+    _initInternalData();
+  }
+
+  void _initInternalData() async {
+    _geoAddresses = _initGeoAddresses();
+    _force = _initForce();
     _crimes = _initCrimeFutures();
+  }
+
+  Future<List<GeoCodingAddress>> _initGeoAddresses() async {
+    return fetchCoordinates(widget.data.address);
+  }
+
+  Future<NeighbourhoodForceData> _initForce() async {
+    List<GeoCodingAddress> matches = await _geoAddresses;
+    GeoCodingAddress topMatch = matches.first;
+    GeoCodingLocation topMatchLocation = topMatch.geometry.location;
+    LocateNeighbourhood neighbourhood = await fetchLocationAuthority(
+      topMatchLocation.lat,
+      topMatchLocation.lng,
+    );
+
+    return fetchForceData(neighbourhood.force);
   }
 
   Future<Map<String, List<Crime>>> _initCrimeFutures() async {
     if (widget.data.address.isEmpty) {
       return Map();
     }
-    List<GeoCodingAddress> addressFuture =
-        await fetchCoordinates(widget.data.address);
-    GeoCodingLocation location = addressFuture.first.geometry.location;
+    List<GeoCodingAddress> matches = await _geoAddresses;
+    GeoCodingLocation location = matches.first.geometry.location;
     List<Crime> rawCrimes =
         await fetchCrimeAtLocation(location.lat, location.lng);
     Map<String, List<Crime>> groupedCrimes =
@@ -89,7 +122,38 @@ class _CrimePanelState extends State<CrimePanel> {
         ),
         Flexible(
           flex: 2,
-          child: Placeholder(),
+          child: Row(
+            children: [
+              Container(
+                width: 150,
+                child: FutureBuilder(
+                  future: _crimes,
+                  builder: (ctx, snapshot) {
+                    if (snapshot.hasData) {
+                      return CrimeSummaryChart(
+                        crimes: snapshot.data as Map<String, List<Crime>>,
+                      );
+                    }
+
+                    return Center(child: CircularProgressIndicator());
+                  },
+                ),
+              ),
+              Expanded(
+                child: FutureBuilder(
+                  future: _force,
+                  builder: (ctx, snapshot) {
+                    if (snapshot.hasData) {
+                      return NeighbourhoodContacts(
+                          snapshot.data as NeighbourhoodForceData);
+                    }
+
+                    return Center(child: CircularProgressIndicator());
+                  },
+                ),
+              )
+            ],
+          ),
         ),
         Flexible(
           flex: 3,
@@ -98,7 +162,8 @@ class _CrimePanelState extends State<CrimePanel> {
             builder: (ctx, snapshot) {
               if (snapshot.hasData) {
                 return CrimeList(
-                    crimes: snapshot.data as Map<String, List<Crime>>);
+                  crimes: snapshot.data as Map<String, List<Crime>>,
+                );
               }
 
               return Center(child: CircularProgressIndicator());
