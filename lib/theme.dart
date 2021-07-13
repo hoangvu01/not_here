@@ -21,6 +21,9 @@ class AppTheme {
         iconTheme: IconThemeData(
           color: Colors.grey.shade600,
         ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.white,
+        ),
         shadowColor: Colors.blueGrey.shade100,
         dividerColor: Colors.grey,
       );

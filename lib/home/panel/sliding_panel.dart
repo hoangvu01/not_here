@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:not_here/home/panel/neighbourhood_details.dart';
 import 'package:not_here/home/panel/scroll_list/scroll_summary.dart';
-import 'package:not_here/web/google_api/geocoding/geocoding_query.dart';
 import 'package:not_here/web/google_api/geocoding/model/geocode_parts.dart';
 import 'package:not_here/web/police_api/crime_query.dart';
 import 'package:not_here/web/police_api/force_query.dart';
@@ -12,7 +11,7 @@ import 'package:not_here/web/police_api/model/crime.dart';
 import 'package:not_here/web/police_api/model/neighbourhood.dart';
 
 class CrimePanelData {
-  final String address;
+  final GeoCodingAddress address;
 
   CrimePanelData(this.address);
 }
@@ -27,10 +26,6 @@ class CrimePanel extends StatefulWidget {
 }
 
 class _CrimePanelState extends State<CrimePanel> {
-  /// The future contains address and coordinates of the locations that match
-  /// the text in the search bar
-  late final Future<List<GeoCodingAddress>> _geoAddresses;
-
   /// The future contains details about the neighbourhood from the address
   /// in the search box
   late final Future<NeighbourhoodForceData> _force;
@@ -46,34 +41,22 @@ class _CrimePanelState extends State<CrimePanel> {
   }
 
   void _initInternalData() async {
-    print("Initialising...");
-    _geoAddresses = _initGeoAddresses();
     _force = _initForce();
     _crimes = _initCrimeFutures();
   }
 
-  Future<List<GeoCodingAddress>> _initGeoAddresses() async {
-    return fetchCoordinates(widget.data.address);
-  }
-
   Future<NeighbourhoodForceData> _initForce() async {
-    List<GeoCodingAddress> matches = await _geoAddresses;
-    GeoCodingAddress topMatch = matches.first;
-    GeoCodingLocation topMatchLocation = topMatch.geometry.location;
+    GeoCodingLocation location = widget.data.address.geometry.location;
     LocateNeighbourhood neighbourhood = await fetchLocationAuthority(
-      topMatchLocation.lat,
-      topMatchLocation.lng,
+      location.lat,
+      location.lng,
     );
 
     return fetchForceData(neighbourhood.force);
   }
 
   Future<Map<String, List<Crime>>> _initCrimeFutures() async {
-    if (widget.data.address.isEmpty) {
-      return Map();
-    }
-    List<GeoCodingAddress> matches = await _geoAddresses;
-    GeoCodingLocation location = matches.first.geometry.location;
+    GeoCodingLocation location = widget.data.address.geometry.location;
     List<Crime> rawCrimes =
         await fetchCrimeAtLocation(location.lat, location.lng);
     Map<String, List<Crime>> groupedCrimes =

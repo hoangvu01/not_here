@@ -7,7 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<List<GeoCodingAddress>> fetchCoordinates(String address) async {
   final Map<String, String> queryParams = {
-    'address': address,
+    'address': '${address.replaceAll(RegExp('[Uu][Kk]'), '')} UK',
     'key': dotenv.env['GEOCODING_API_KEY']!,
   };
 

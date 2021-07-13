@@ -26,11 +26,13 @@ class GeoCodingGeometry {
   Map<String, dynamic> toJson() => _$GeoCodingGeometryToJson(this);
 }
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class GeoCodingAddress {
-  GeoCodingAddress(this.geometry);
+  GeoCodingAddress(this.geometry, this.formattedAddress, this.types);
 
+  final String formattedAddress;
   final GeoCodingGeometry geometry;
+  final List<String>? types;
 
   factory GeoCodingAddress.fromJson(Map<String, dynamic> json) =>
       _$GeoCodingAddressFromJson(json);
