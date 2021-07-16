@@ -33,7 +33,6 @@ class _SelectableAddressListState extends State<SelectableAddressList> {
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10),
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
               child: ListView.builder(
                 itemCount: widget.addresses.length,
                 itemBuilder: (BuildContext ctx, int index) {

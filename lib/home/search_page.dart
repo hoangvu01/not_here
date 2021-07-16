@@ -111,9 +111,11 @@ class _SearchPageState extends State<SearchPage> {
               setState(() {
                 _enteredSearchText = "";
                 _geoAddresses = null;
+                searchBarController.clear();
+                _panelController.close();
+                _isPanelVisible = false;
+                _isAddressListVisible = false;
               });
-              searchBarController.clear();
-              _panelController.close();
             },
             child: Icon(Icons.clear, size: 14),
           ),
@@ -164,9 +166,14 @@ class _SearchPageState extends State<SearchPage> {
                       _panelController.open();
                     });
                   });
+            } else if (snapshot.hasError) {
+              return Center(
+                  child: Text(
+                'Unable to process data at the moment...',
+              ));
             }
 
-            return Text("No results");
+            return Center(child: LinearProgressIndicator());
           },
         ),
       );
@@ -175,39 +182,38 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        SlidingUpPanel(
-          renderPanelSheet: false,
-          backdropColor: Theme.of(context).scaffoldBackgroundColor,
-          controller: _panelController,
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Flexible(
-                flex: 2,
-                child: Center(
-                  child: Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 50, vertical: 10.0),
-                    child: Text(
-                      'Are you travelling through a safe neighbourhood?',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Flexible(
+              flex: 2,
+              child: Center(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 50, vertical: 10.0),
+                  child: Text(
+                    'Are you travelling through a safe neighbourhood?',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
-              Flexible(
-                flex: 1,
-                child: _buildSearchBox(context),
-              ),
-              Flexible(
-                flex: 4,
-                child: _buildSelectableAddressList(context),
-              ),
-            ],
-          ),
+            ),
+            Flexible(
+              flex: 1,
+              child: _buildSearchBox(context),
+            ),
+            Flexible(
+              flex: 4,
+              child: _buildSelectableAddressList(context),
+            ),
+          ],
+        ),
+        SlidingUpPanel(
+          renderPanelSheet: false,
+          backdropColor: Theme.of(context).scaffoldBackgroundColor,
+          controller: _panelController,
           panel: Visibility(
             visible: _isPanelVisible,
             child: _selectedAddress == null
@@ -229,7 +235,10 @@ class _SearchPageState extends State<SearchPage> {
             decoration:
                 BoxDecoration(shape: BoxShape.circle, color: Colors.red),
             child: ElevatedButton(
-              onPressed: _useUserLocation,
+              onPressed: () {
+                FocusScope.of(context).unfocus();
+                _useUserLocation();
+              },
               child: Icon(Icons.my_location, size: 26),
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),
