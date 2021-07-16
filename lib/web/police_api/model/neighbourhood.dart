@@ -31,7 +31,7 @@ class NeibourhoodForceEngagement {
   final String title;
 
   @JsonKey(required: true)
-  final String type;
+  final String? type;
 
   factory NeibourhoodForceEngagement.fromJson(Map<String, dynamic> json) =>
       _$NeibourhoodForceEngagementFromJson(json);

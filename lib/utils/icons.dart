@@ -11,7 +11,6 @@ class IconsGenerator {
       _BRANDS_ICON_MAPPING.containsKey(text.toLowerCase());
 
   static FaIcon generateBrandIcon(String text) {
-    assert(hasBrand(text));
     return _BRANDS_ICON_MAPPING[text.toLowerCase()]!;
   }
 }

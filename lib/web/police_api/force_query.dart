@@ -9,7 +9,7 @@ Future<LocateNeighbourhood> fetchLocationAuthority(
   double lng,
 ) async {
   final queryParams = {
-    'q': '51.5161528999,0.0215639',
+    'q': '$lat,$lng',
   };
 
   Uri url = Uri.https(

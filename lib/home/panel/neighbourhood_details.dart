@@ -11,10 +11,10 @@ class NeighbourhoodContacts extends StatelessWidget {
   List<Widget> _buildEngagementMethods(BuildContext context) {
     List<Widget> widgets = data.engagementMethods
         .where((NeibourhoodForceEngagement item) =>
-            IconsGenerator.hasBrand(item.type))
+            IconsGenerator.hasBrand(item.type ?? ''))
         .map(
           (NeibourhoodForceEngagement item) => IconButton(
-            icon: IconsGenerator.generateBrandIcon(item.type),
+            icon: IconsGenerator.generateBrandIcon(item.type!),
             onPressed: () => launchInBrowser(item.url),
           ),
         )
