@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:not_here/home/panel/neighbourhood_details.dart';
-import 'package:not_here/home/panel/scroll_list/scroll_summary.dart';
+import 'package:not_here/home/panel/panel_content/scroll_summary.dart';
 import 'package:not_here/web/google_api/geocoding/model/geocode_parts.dart';
 import 'package:not_here/web/police_api/crime_query.dart';
 import 'package:not_here/web/police_api/force_query.dart';
@@ -74,6 +74,10 @@ class _CrimePanelState extends State<CrimePanel> {
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
+        ),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.primaryVariant,
+          width: 2,
         ),
         boxShadow: [
           BoxShadow(

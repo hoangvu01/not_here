@@ -33,19 +33,14 @@ class NeighbourhoodContacts extends StatelessWidget {
     return [
       RichText(
         text: TextSpan(
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            fontFamily: 'Montserrat',
-            color: Colors.black,
-          ),
+          style: Theme.of(context).textTheme.headline2,
           text: data.name,
         ),
       ),
       GestureDetector(
         child: RichText(
           text: TextSpan(
-            style: DefaultTextStyle.of(context).style,
+            style: Theme.of(context).textTheme.bodyText1,
             text: data.url,
           ),
         ),
@@ -54,7 +49,7 @@ class NeighbourhoodContacts extends StatelessWidget {
       GestureDetector(
         child: RichText(
           text: TextSpan(
-            style: DefaultTextStyle.of(context).style,
+            style: Theme.of(context).textTheme.bodyText1,
             text: "Hotline: ${data.telephone}",
           ),
         ),

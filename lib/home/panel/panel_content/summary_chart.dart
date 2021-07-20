@@ -81,6 +81,24 @@ class _CrimeSummaryChartState extends State<CrimeSummaryChart> {
         seriesList,
         defaultRenderer: charts.BarRendererConfig<DateTime>(),
         animate: true,
+        domainAxis: charts.DateTimeAxisSpec(
+          renderSpec: charts.GridlineRendererSpec(
+            labelStyle: charts.TextStyleSpec(
+              color: charts.ColorUtil.fromDartColor(
+                Theme.of(context).textTheme.bodyText1!.color!,
+              ),
+            ),
+          ),
+        ),
+        primaryMeasureAxis: charts.NumericAxisSpec(
+          renderSpec: charts.GridlineRendererSpec(
+            labelStyle: charts.TextStyleSpec(
+              color: charts.ColorUtil.fromDartColor(
+                Theme.of(context).textTheme.bodyText1!.color!,
+              ),
+            ),
+          ),
+        ),
         behaviors: [
           charts.SeriesLegend(
             position: charts.BehaviorPosition.bottom,
@@ -88,7 +106,8 @@ class _CrimeSummaryChartState extends State<CrimeSummaryChart> {
             desiredMaxColumns: 2,
             entryTextStyle: charts.TextStyleSpec(
               color: charts.ColorUtil.fromDartColor(
-                  Theme.of(context).colorScheme.secondary),
+                Theme.of(context).textTheme.bodyText1!.color!,
+              ),
               fontSize: 11,
             ),
           ),

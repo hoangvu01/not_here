@@ -173,7 +173,13 @@ class _SearchPageState extends State<SearchPage> {
               ));
             }
 
-            return Center(child: LinearProgressIndicator());
+            return Center(
+              child: SizedBox(
+                height: 2,
+                width: 100,
+                child: LinearProgressIndicator(),
+              ),
+            );
           },
         ),
       );
@@ -192,10 +198,7 @@ class _SearchPageState extends State<SearchPage> {
                   margin: EdgeInsets.symmetric(horizontal: 50, vertical: 10.0),
                   child: Text(
                     'Are you travelling through a safe neighbourhood?',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.headline1,
                   ),
                 ),
               ),

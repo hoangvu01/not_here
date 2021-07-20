@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:not_here/home/panel/scroll_list/crime_list.dart';
-import 'package:not_here/home/panel/scroll_list/summary_chart.dart';
+import 'package:not_here/home/panel/panel_content/crime_list.dart';
+import 'package:not_here/home/panel/panel_content/summary_chart.dart';
 import 'package:not_here/web/police_api/model/crime.dart';
 
 class ScrollListWrapper extends StatelessWidget {

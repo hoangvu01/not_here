@@ -25,10 +25,7 @@ class _SelectableAddressListState extends State<SelectableAddressList> {
           Text(
             'Select an address',
             textAlign: TextAlign.start,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.headline2,
           ),
           Expanded(
             child: Container(

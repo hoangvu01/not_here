@@ -97,9 +97,7 @@ class _CrimeListCardState extends State<CrimeListCard> {
                       alignment: Alignment.bottomLeft,
                       child: Text(
                         ReCase(widget.crimes.first.category).titleCase,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.headline3,
                       ),
                     ),
                   ),
@@ -110,9 +108,7 @@ class _CrimeListCardState extends State<CrimeListCard> {
                       child: Text(
                         "${widget.crimes.last.location.street.name} "
                         "in ${DateFormat('MM-yyyy').format(widget.crimes.last.month)}",
-                        style: TextStyle(
-                          fontSize: 11,
-                        ),
+                        style: Theme.of(context).textTheme.bodyText2,
                       ),
                     ),
                   ),
