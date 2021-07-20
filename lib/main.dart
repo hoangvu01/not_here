@@ -1,11 +1,11 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:not_here/model.dart';
 import 'package:provider/provider.dart';
 
 import 'package:not_here/setting/setting_page.dart';
 import 'package:not_here/home/search_page.dart';
-import 'package:not_here/theme.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
@@ -30,7 +30,7 @@ class _NotHereState extends State<NotHere> {
   }
 
   void _initAppTheme() async {
-    _appModel.isDark = await _appModel.preference.getTheme();
+    await _appModel.fetchSharedPreferences();
   }
 
   @override

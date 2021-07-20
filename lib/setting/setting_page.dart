@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:not_here/setting/setting_item.dart';
+import 'package:not_here/setting/setting_contact.dart';
+import 'package:not_here/setting/setting_theme.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _SettingsPageState extends State<SettingsPage> {
             margin: EdgeInsets.symmetric(horizontal: 50),
             child: Center(
               child: Text(
-                'Settings',
+                'Preferences',
                 style: Theme.of(context).textTheme.headline1,
               ),
             ),
@@ -31,12 +32,11 @@ class _SettingsPageState extends State<SettingsPage> {
             child: GridView.count(
               crossAxisCount: 2,
               crossAxisSpacing: 5,
+              childAspectRatio: 1,
               mainAxisSpacing: 10,
               children: [
-                SettingsItem(),
-                SettingsItem(),
-                SettingsItem(),
-                SettingsItem(),
+                ThemeSetting(),
+                ContactSetting(),
               ],
             ),
           ),

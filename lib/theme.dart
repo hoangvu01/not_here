@@ -13,28 +13,6 @@ class AppThemePreference {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool(THEME_SETTING) ?? false;
   }
-}
-
-class AppModel extends ChangeNotifier {
-  AppThemePreference preference = AppThemePreference();
-  bool _isDark = false;
-
-  bool get isDark => _isDark;
-  set isDark(bool value) {
-    if (value != _isDark) {
-      _isDark = value;
-      preference.setThemePref(value);
-      notifyListeners();
-    }
-  }
-
-  void toggleTheme() {
-    _isDark = !_isDark;
-    preference.setThemePref(_isDark);
-    notifyListeners();
-  }
-
-  ThemeData get currentTheme => _isDark ? darkTheme : lightTheme;
 
   ThemeData get lightTheme => ThemeData(
         accentIconTheme: IconThemeData(
@@ -64,6 +42,11 @@ class AppModel extends ChangeNotifier {
           ),
           headline3: TextStyle(
             fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          headline4: TextStyle(
+            fontSize: 11,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -120,6 +103,11 @@ class AppModel extends ChangeNotifier {
           ),
           headline3: TextStyle(
             fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          headline4: TextStyle(
+            fontSize: 11,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),

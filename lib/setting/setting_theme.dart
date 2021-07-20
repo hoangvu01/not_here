@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:not_here/theme.dart';
+import 'package:not_here/model.dart';
 import 'package:provider/provider.dart';
 
-class SettingsItem extends StatefulWidget {
-  const SettingsItem({Key? key}) : super(key: key);
+class ThemeSetting extends StatefulWidget {
+  const ThemeSetting({Key? key}) : super(key: key);
 
   @override
-  _SettingsItemState createState() => _SettingsItemState();
+  _ThemeSettingState createState() => _ThemeSettingState();
 }
 
-class _SettingsItemState extends State<SettingsItem> {
+class _ThemeSettingState extends State<ThemeSetting> {
   @override
   Widget build(BuildContext context) {
     final _appModel = Provider.of<AppModel>(context);
@@ -17,7 +17,6 @@ class _SettingsItemState extends State<SettingsItem> {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-      height: 90,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: Theme.of(context).colorScheme.onBackground,
@@ -30,40 +29,19 @@ class _SettingsItemState extends State<SettingsItem> {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Flexible(
             flex: 4,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 6),
               padding: const EdgeInsets.symmetric(vertical: 5),
-              child: Column(
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        'Theme',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Description',
-                        style: TextStyle(
-                          fontSize: 11,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              child: Text(
+                'Dark Theme',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
