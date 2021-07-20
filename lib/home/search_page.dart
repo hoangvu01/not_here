@@ -9,8 +9,27 @@ import 'package:not_here/web/google_api/geocoding/geocoding_query.dart';
 import 'package:not_here/web/google_api/geocoding/model/geocode_parts.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+class SearchPageData {
+  /// The future contains address and coordinates of the locations that match
+  /// the text in the search bar
+  Future<List<GeoCodingAddress>>? geoAddresses;
+
+  /// Address selected by user
+  GeoCodingAddress? selectedAddress;
+
+  /// Visibility of slide-up panel
+  bool isPanelVisible = false;
+
+  /// Visibility of list of addresses
+  bool isAddressListVisible = false;
+
+  /// Completed search bar after user has hit ENTER
+  String enteredSearchText = "";
+}
+
 class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key, required this.pageController}) : super(key: key);
+  const SearchPage({required Key key, required this.pageController})
+      : super(key: key);
 
   final PageController pageController;
 
@@ -25,28 +44,24 @@ class _SearchPageState extends State<SearchPage> {
   /// Create a google map query session
   final GoogleMapQueryService _googleMapQuery = GoogleMapQueryService();
 
-  /// The future contains address and coordinates of the locations that match
-  /// the text in the search bar
-  Future<List<GeoCodingAddress>>? _geoAddresses;
-
-  /// Address selected by user
-  GeoCodingAddress? _selectedAddress;
-
-  /// Visibility of slide-up panel
-  bool _isPanelVisible = false;
-
-  /// Visibility of list of addresses
-  bool _isAddressListVisible = false;
-
-  /// Completed search bar after user has hit ENTER
-  String _enteredSearchText = "";
+  /// Data required to populate this page
+  late final SearchPageData _data;
 
   @override
   void initState() {
     super.initState();
+    SearchPageData? p = PageStorage.of(context)?.readState(
+      context,
+      identifier: ValueKey('searchPage'),
+    ) as SearchPageData?;
+    if (p != null) {
+      _data = p;
+    } else {
+      _data = SearchPageData();
+    }
     searchBarController.addListener(() {
       if (searchBarController.text.isEmpty) {
-        _isPanelVisible = false;
+        _data.isPanelVisible = false;
       }
     });
   }
@@ -89,12 +104,14 @@ class _SearchPageState extends State<SearchPage> {
     developer.log("Acquired location sucessfully\n"
         "(Lat, Lng): (${_locationData.latitude}, ${_locationData.longitude})");
     setState(() {
-      _geoAddresses = _googleMapQuery.reverseGeocode(
+      _data.geoAddresses = _googleMapQuery.reverseGeocode(
         _locationData.latitude!,
         _locationData.longitude!,
       );
-      _isAddressListVisible = true;
+      _data.isAddressListVisible = true;
     });
+    PageStorage.of(context)
+        ?.writeState(context, _data, identifier: ValueKey('searchPage'));
   }
 
   Widget _buildSearchTextField(BuildContext ctx) {
@@ -109,12 +126,14 @@ class _SearchPageState extends State<SearchPage> {
           suffix: GestureDetector(
             onTap: () {
               setState(() {
-                _enteredSearchText = "";
-                _geoAddresses = null;
+                _data.enteredSearchText = "";
+                _data.geoAddresses = null;
                 searchBarController.clear();
                 _panelController.close();
-                _isPanelVisible = false;
-                _isAddressListVisible = false;
+                _data.isPanelVisible = false;
+                _data.isAddressListVisible = false;
+                PageStorage.of(context)?.writeState(context, _data,
+                    identifier: ValueKey('searchPage'));
               });
             },
             child: Icon(Icons.clear, size: 14),
@@ -123,9 +142,12 @@ class _SearchPageState extends State<SearchPage> {
         onEditingComplete: () {
           setState(() {
             FocusScope.of(context).unfocus();
-            _enteredSearchText = searchBarController.text;
-            _geoAddresses = _googleMapQuery.forwardGeocode(_enteredSearchText);
-            _isAddressListVisible = true;
+            _data.enteredSearchText = searchBarController.text;
+            _data.geoAddresses =
+                _googleMapQuery.forwardGeocode(_data.enteredSearchText);
+            _data.isAddressListVisible = true;
+            PageStorage.of(context)?.writeState(context, _data,
+                identifier: ValueKey('searchPage'));
           });
         },
       ),
@@ -151,9 +173,9 @@ class _SearchPageState extends State<SearchPage> {
       );
 
   Widget _buildSelectableAddressList(BuildContext context) => Visibility(
-        visible: _isAddressListVisible,
+        visible: _data.isAddressListVisible,
         child: FutureBuilder(
-          future: _geoAddresses,
+          future: _data.geoAddresses,
           builder: (ctx, snapshot) {
             if (snapshot.hasData) {
               final addresses = snapshot.data as List<GeoCodingAddress>;
@@ -161,10 +183,12 @@ class _SearchPageState extends State<SearchPage> {
                   addresses: addresses,
                   onSelect: (GeoCodingAddress address) {
                     setState(() {
-                      _selectedAddress = address;
-                      _isPanelVisible = true;
+                      _data.selectedAddress = address;
+                      _data.isPanelVisible = true;
                       _panelController.open();
                     });
+                    PageStorage.of(context)?.writeState(context, _data,
+                        identifier: ValueKey('searchPage'));
                   });
             } else if (snapshot.hasError) {
               return Center(
@@ -218,12 +242,12 @@ class _SearchPageState extends State<SearchPage> {
           backdropColor: Theme.of(context).scaffoldBackgroundColor,
           controller: _panelController,
           panel: Visibility(
-            visible: _isPanelVisible,
-            child: _selectedAddress == null
+            visible: _data.isPanelVisible,
+            child: _data.selectedAddress == null
                 ? Text("Invalid address")
                 : CrimePanel(
-                    key: Key(_enteredSearchText),
-                    data: CrimePanelData(_selectedAddress!),
+                    key: Key(_data.enteredSearchText),
+                    data: CrimePanelData(_data.selectedAddress!),
                   ),
           ),
           maxHeight: MediaQuery.of(context).size.height -

@@ -60,6 +60,9 @@ class _LandingPageState extends State<LandingPage> {
   final PageController _pageController = PageController();
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
+  final _searchPageKey = PageStorageKey<String>('searchPage');
+  final _searchPageBucket = PageStorageBucket();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +76,13 @@ class _LandingPageState extends State<LandingPage> {
             navbarState?.setPage(index);
           },
           children: <Widget>[
-            SearchPage(pageController: _pageController),
+            PageStorage(
+              child: SearchPage(
+                key: _searchPageKey,
+                pageController: _pageController,
+              ),
+              bucket: _searchPageBucket,
+            ),
             SettingsPage(),
           ],
         ),
