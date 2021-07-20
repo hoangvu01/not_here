@@ -263,6 +263,15 @@ class _SearchPageState extends State<SearchPage> {
                 BoxDecoration(shape: BoxShape.circle, color: Colors.red),
             child: ElevatedButton(
               onPressed: () {
+                setState(() {
+                  _panelController.close();
+                  _data.isPanelVisible = false;
+                  PageStorage.of(context)?.writeState(
+                    context,
+                    _data,
+                    identifier: ValueKey('searchPage'),
+                  );
+                });
                 FocusScope.of(context).unfocus();
                 _useUserLocation();
               },

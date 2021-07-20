@@ -38,7 +38,6 @@ class _SelectableAddressListState extends State<SelectableAddressList> {
                   return Container(
                     margin:
                         const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
-                    color: Theme.of(context).colorScheme.onBackground,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: Theme.of(context).colorScheme.onBackground,
