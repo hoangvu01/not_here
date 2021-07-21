@@ -37,10 +37,13 @@ class SearchPage extends StatefulWidget {
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
+class _SearchPageState extends State<SearchPage>
+    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   /// Search bar attributes
   final TextEditingController searchBarController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
+  late final AnimationController _animationController;
+  late final Animation _animation;
 
   /// Panel components
   final PanelController _panelController = PanelController();
@@ -51,8 +54,6 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
   /// Data required to populate this page
   late final SearchPageData _data;
 
-  bool _isKeyboardClose = false;
-  bool _isKeyboardOpen = false;
   double _prevBottomInset = 0;
 
   @override
@@ -60,20 +61,40 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
 
+    _initData();
+    _initAnimation();
+    _initSearchBar();
+  }
+
+  void _initData() {
     SearchPageData? p = PageStorage.of(context)?.readState(
       context,
       identifier: ValueKey('searchPage'),
     ) as SearchPageData?;
-    if (p != null) {
-      _data = p;
-    } else {
-      _data = SearchPageData();
-    }
+    _data = p ?? SearchPageData();
+  }
+
+  void _initSearchBar() {
     searchBarController.addListener(() {
       if (searchBarController.text.isEmpty) {
         _data.isPanelVisible = false;
       }
     });
+
+    _textFieldFocusNode.addListener(() {
+      if (_textFieldFocusNode.hasFocus) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  void _initAnimation() {
+    _animationController =
+        AnimationController(duration: Duration(milliseconds: 200), vsync: this);
+    _animation = IntTween(begin: 8, end: 3).animate(_animationController);
+    _animation.addListener(() => setState(() {}));
   }
 
   @override
@@ -89,11 +110,8 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
     if (bottomInset == 0 && _prevBottomInset > 0) {
       _textFieldFocusNode.unfocus();
     }
-    setState(() {
-      _isKeyboardOpen = bottomInset > 0;
-      _isKeyboardClose = bottomInset == 0;
-      _prevBottomInset = bottomInset;
-    });
+    _prevBottomInset = bottomInset;
+    setState(() {});
   }
 
   void _useUserLocation() async {
@@ -169,6 +187,9 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
             child: Icon(Icons.clear, size: 14),
           ),
         ),
+        onTap: () {
+          _animationController.forward();
+        },
         onEditingComplete: () {
           setState(() {
             FocusScope.of(context).unfocus();
@@ -255,7 +276,7 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Flexible(
-              flex: 2,
+              flex: 4,
               child: Center(
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 50, vertical: 10.0),
@@ -267,11 +288,11 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
               ),
             ),
             Flexible(
-              flex: 1,
+              flex: 2,
               child: _buildSearchBox(context),
             ),
-            Flexible(
-              flex: _isKeyboardOpen ? 2 : 4,
+            Expanded(
+              flex: _animation.value,
               child: _buildSelectableAddressList(context),
             ),
           ],

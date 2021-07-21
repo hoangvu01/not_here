@@ -44,7 +44,6 @@ class GoogleMapQueryService {
       'key': dotenv.env['GEOCODING_API_KEY']!,
     };
 
-    print('${lat.toString()},${lng.toString()}');
     Uri url =
         Uri.https('maps.googleapis.com', '/maps/api/geocode/json', queryParams);
     developer.log("Queyring ${url.host} ${url.path}"

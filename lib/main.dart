@@ -39,7 +39,6 @@ class _NotHereState extends State<NotHere> {
       value: _appModel,
       child: Consumer<AppModel>(
         builder: (ctx, app, child) {
-          print("Build: ${app.isDark}");
           return MaterialApp(
               title: 'Not Here!',
               themeMode: app.themeMode,
