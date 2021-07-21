@@ -38,7 +38,11 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
+  /// Search bar attributes
   final TextEditingController searchBarController = TextEditingController();
+  final FocusNode _textFieldFocusNode = FocusNode();
+
+  /// Panel components
   final PanelController _panelController = PanelController();
 
   /// Create a google map query session
@@ -82,12 +86,14 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
   @override
   void didChangeMetrics() {
     final bottomInset = WidgetsBinding.instance!.window.viewInsets.bottom;
+    if (bottomInset == 0 && _prevBottomInset > 0) {
+      _textFieldFocusNode.unfocus();
+    }
     setState(() {
       _isKeyboardOpen = bottomInset > 0;
       _isKeyboardClose = bottomInset == 0;
       _prevBottomInset = bottomInset;
     });
-    print(_isKeyboardOpen);
   }
 
   void _useUserLocation() async {
@@ -143,6 +149,7 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
       padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
       child: TextField(
         controller: searchBarController,
+        focusNode: _textFieldFocusNode,
         decoration: InputDecoration(
           icon: Icon(Icons.search),
           border: UnderlineInputBorder(),
@@ -154,7 +161,6 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
                 _data.geoAddresses = null;
                 searchBarController.clear();
                 _panelController.close();
-                _data.isPanelVisible = false;
                 _data.isAddressListVisible = false;
                 PageStorage.of(context)?.writeState(context, _data,
                     identifier: ValueKey('searchPage'));
