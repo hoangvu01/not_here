@@ -27,11 +27,10 @@ class _ContactSettingState extends State<ContactSetting>
   void didChangeMetrics() {
     final bottomInset = WidgetsBinding.instance!.window.viewInsets.bottom;
     if (bottomInset == 0 && _prevBottomInset > 0) {
-      setState(() {
-        _phoneFocusNode.unfocus();
-      });
+      _phoneFocusNode.unfocus();
     }
     _prevBottomInset = bottomInset;
+    setState(() {});
   }
 
   @override

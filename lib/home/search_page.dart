@@ -37,7 +37,7 @@ class SearchPage extends StatefulWidget {
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
   final TextEditingController searchBarController = TextEditingController();
   final PanelController _panelController = PanelController();
 
@@ -47,9 +47,15 @@ class _SearchPageState extends State<SearchPage> {
   /// Data required to populate this page
   late final SearchPageData _data;
 
+  bool _isKeyboardClose = false;
+  bool _isKeyboardOpen = false;
+  double _prevBottomInset = 0;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+
     SearchPageData? p = PageStorage.of(context)?.readState(
       context,
       identifier: ValueKey('searchPage'),
@@ -64,6 +70,24 @@ class _SearchPageState extends State<SearchPage> {
         _data.isPanelVisible = false;
       }
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    searchBarController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final bottomInset = WidgetsBinding.instance!.window.viewInsets.bottom;
+    setState(() {
+      _isKeyboardOpen = bottomInset > 0;
+      _isKeyboardClose = bottomInset == 0;
+      _prevBottomInset = bottomInset;
+    });
+    print(_isKeyboardOpen);
   }
 
   void _useUserLocation() async {
@@ -216,7 +240,7 @@ class _SearchPageState extends State<SearchPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Flexible(
-              flex: 2,
+              flex: _isKeyboardOpen ? 1 : 2,
               child: Center(
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 50, vertical: 10.0),
