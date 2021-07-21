@@ -209,6 +209,15 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
           builder: (ctx, snapshot) {
             if (snapshot.hasData) {
               final addresses = snapshot.data as List<GeoCodingAddress>;
+              if (addresses.isEmpty)
+                return Container(
+                  padding: const EdgeInsets.all(50),
+                  child: Text(
+                    'We cannot find a location that matches your search criteria',
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                );
+
               return SelectableAddressList(
                   addresses: addresses,
                   onSelect: (GeoCodingAddress address) {
@@ -246,7 +255,7 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Flexible(
-              flex: _isKeyboardOpen ? 1 : 2,
+              flex: 2,
               child: Center(
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 50, vertical: 10.0),
@@ -262,7 +271,7 @@ class _SearchPageState extends State<SearchPage> with WidgetsBindingObserver {
               child: _buildSearchBox(context),
             ),
             Flexible(
-              flex: 4,
+              flex: _isKeyboardOpen ? 2 : 4,
               child: _buildSelectableAddressList(context),
             ),
           ],

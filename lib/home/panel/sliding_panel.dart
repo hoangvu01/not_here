@@ -102,6 +102,13 @@ class _CrimePanelState extends State<CrimePanel> {
               if (snapshot.hasData) {
                 return NeighbourhoodContacts(
                     snapshot.data as NeighbourhoodForceData);
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    'Contact details unavailable',
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                );
               }
 
               return Center(child: CircularProgressIndicator());
@@ -113,14 +120,18 @@ class _CrimePanelState extends State<CrimePanel> {
           child: FutureBuilder(
             future: _crimes,
             builder: (ctx, snapshot) {
+              final crimes = snapshot.data as Map<String, List<Crime>>?;
               if (snapshot.hasData) {
+                if (crimes == null || crimes.isEmpty)
+                  return Container(
+                    padding: const EdgeInsets.all(50),
+                    child: Text('No data available for the chosen location.'),
+                  );
                 return Container(
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                  child: ScrollListWrapper(
-                    crimes: snapshot.data as Map<String, List<Crime>>,
-                  ),
+                  child: ScrollListWrapper(crimes: crimes),
                 );
               }
 
