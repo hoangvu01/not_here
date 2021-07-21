@@ -38,12 +38,15 @@ class _NotHereState extends State<NotHere> {
     return ChangeNotifierProvider<AppModel>.value(
       value: _appModel,
       child: Consumer<AppModel>(
-        builder: (ctx, value, child) => MaterialApp(
-          title: 'Not Here!',
-          theme: _appModel.currentTheme,
-          darkTheme: _appModel.darkTheme,
-          home: LandingPage(),
-        ),
+        builder: (ctx, app, child) {
+          print("Build: ${app.isDark}");
+          return MaterialApp(
+              title: 'Not Here!',
+              themeMode: app.themeMode,
+              theme: _appModel.lightTheme,
+              darkTheme: _appModel.darkTheme,
+              home: LandingPage());
+        },
       ),
     );
   }

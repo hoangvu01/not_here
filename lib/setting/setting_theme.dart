@@ -47,13 +47,27 @@ class _ThemeSettingState extends State<ThemeSetting> {
           ),
           Flexible(
             flex: 1,
-            child: Center(
-              child: IconButton(
-                onPressed: () => _appModel.toggleTheme(),
-                icon: _appModel.isDark
-                    ? Icon(Icons.dark_mode_outlined)
-                    : Icon(Icons.light_mode_outlined),
-              ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Visibility(
+                  visible: !_appModel.isUsingSystemTheme,
+                  child: IconButton(
+                    onPressed: () => _appModel.toggleTheme(),
+                    icon: _appModel.isDark
+                        ? Icon(Icons.dark_mode_outlined)
+                        : Icon(Icons.light_mode_outlined),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => _appModel.toggleSystemTheme(),
+                  icon: Icon(Icons.phone_iphone,
+                      color: _appModel.isUsingSystemTheme
+                          ? Theme.of(context).accentIconTheme.color
+                          : Theme.of(context).iconTheme.color),
+                ),
+              ],
             ),
           ),
         ],
